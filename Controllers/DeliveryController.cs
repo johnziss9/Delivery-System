@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using DeliverySystem.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,11 +9,22 @@ namespace DeliverySystem.Controllers
     [Route("[controller]")]
     public class DeliveryController : Controller
     {
-        private static Delivery delivery = new Delivery();
+        private static List<Delivery> deliveries = new List<Delivery>
+        {
+            new Delivery(),
+            new Delivery { Id = 1, State = "Expired" }
+        };
 
+        [HttpGet("GetAll")]
         public IActionResult Get()
         {
-            return Ok(delivery);
+            return Ok(deliveries);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetSingle(int id)
+        {
+            return Ok(deliveries.FirstOrDefault(c => c.Id == id));
         }
     }
 }
