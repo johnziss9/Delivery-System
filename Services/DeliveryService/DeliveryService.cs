@@ -13,20 +13,26 @@ namespace DeliverySystem.Services.DeliveryService
             new Delivery { Id = 1, State = "Expired" }
         };
 
-        public async Task<List<Delivery>> AddDelivery(Delivery delivery)
+        public async Task<ServiceResponse<List<Delivery>>> AddDelivery(Delivery delivery)
         {
+            ServiceResponse<List<Delivery>> serviceResponse = new ServiceResponse<List<Delivery>>();
             deliveries.Add(delivery);
-            return deliveries;
+            serviceResponse.Data = deliveries;
+            return serviceResponse;
         }
 
-        public async Task<List<Delivery>> GetAllDeliveries()
+        public async Task<ServiceResponse<List<Delivery>>> GetAllDeliveries()
         {
-            return deliveries;
+            ServiceResponse<List<Delivery>> serviceResponse = new ServiceResponse<List<Delivery>>();
+            serviceResponse.Data = deliveries;
+            return serviceResponse;
         }
 
-        public async Task<Delivery> GetDeliveryById(int id)
+        public async Task<ServiceResponse<Delivery>> GetDeliveryById(int id)
         {
-            return deliveries.FirstOrDefault(d => d.Id == id);
+            ServiceResponse<Delivery> serviceResponse = new ServiceResponse<Delivery>();
+            serviceResponse.Data = deliveries.FirstOrDefault(d => d.Id == id);
+            return serviceResponse;
         }
     }
 }
