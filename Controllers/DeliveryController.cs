@@ -15,6 +15,13 @@ namespace DeliverySystem.Controllers
             new Delivery { Id = 1, State = "Expired" }
         };
 
+        [HttpPost]
+        public IActionResult AddDelivery(Delivery delivery)
+        {
+            deliveries.Add(delivery);
+            return Ok(deliveries);
+        }
+
         [HttpGet("GetAll")]
         public IActionResult Get()
         {
