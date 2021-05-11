@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using DeliverySystem.Dtos.Delivery;
+using DeliverySystem.Models;
 using DeliverySystem.Services.DeliveryService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,17 @@ namespace DeliverySystem.Controllers
         public DeliveryController(IDeliveryService deliveryService)
         {
             _deliveryService = deliveryService;
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateDelivery(UpdateDeliveryDto updatedDelivery)
+        {
+            ServiceResponse<GetDeliveryDto> response = await _deliveryService.UpdateDelivery(updatedDelivery);
+
+            if (response.Data == null)
+                return NotFound(response);
+            
+            return Ok(response);
         }
 
         [HttpPost]

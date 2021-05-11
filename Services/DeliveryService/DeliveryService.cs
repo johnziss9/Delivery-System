@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +21,27 @@ namespace DeliverySystem.Services.DeliveryService
         public DeliveryService(IMapper mapper)
         {
             _mapper = mapper;
+        }
+
+        public async Task<ServiceResponse<GetDeliveryDto>> UpdateDelivery(UpdateDeliveryDto updatedDelivery)
+        {
+            ServiceResponse<GetDeliveryDto> serviceResponse = new ServiceResponse<GetDeliveryDto>();
+
+            try
+            {
+                Delivery delivery = deliveries.FirstOrDefault(d => d.Id == updatedDelivery.Id);
+                delivery.State = updatedDelivery.State;
+                // Did not include the rest of the properties as the state will be the only thing that will need be updated.
+
+                serviceResponse.Data = _mapper.Map<GetDeliveryDto>(delivery);
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+
+            return serviceResponse;
         }
 
         public async Task<ServiceResponse<List<GetDeliveryDto>>> AddDelivery(AddDeliveryDto newDelivery)
