@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using DeliverySystem.Dtos.Delivery;
 using DeliverySystem.Models;
 
 namespace DeliverySystem.Services.DeliveryService
@@ -13,25 +15,35 @@ namespace DeliverySystem.Services.DeliveryService
             new Delivery { Id = 1, State = "Expired" }
         };
 
-        public async Task<ServiceResponse<List<Delivery>>> AddDelivery(Delivery delivery)
+        private readonly IMapper _mapper;
+
+        public DeliveryService(IMapper mapper)
         {
-            ServiceResponse<List<Delivery>> serviceResponse = new ServiceResponse<List<Delivery>>();
+            _mapper = mapper;
+        }
+
+        public async Task<ServiceResponse<List<GetDeliveryDto>>> AddDelivery(AddDeliveryDto newDelivery)
+        {
+            ServiceResponse<List<GetDeliveryDto>> serviceResponse = new ServiceResponse<List<GetDeliveryDto>>();
+            Delivery delivery = _mapper.Map<Delivery>(newDelivery);
+            // Increasing the Id each time a new delivery is added.
+            delivery.Id = deliveries.Max(d => d.Id) + 1;
             deliveries.Add(delivery);
-            serviceResponse.Data = deliveries;
+            serviceResponse.Data = (deliveries.Select(d => _mapper.Map<GetDeliveryDto>(d))).ToList();
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<Delivery>>> GetAllDeliveries()
+        public async Task<ServiceResponse<List<GetDeliveryDto>>> GetAllDeliveries()
         {
-            ServiceResponse<List<Delivery>> serviceResponse = new ServiceResponse<List<Delivery>>();
-            serviceResponse.Data = deliveries;
+            ServiceResponse<List<GetDeliveryDto>> serviceResponse = new ServiceResponse<List<GetDeliveryDto>>();
+            serviceResponse.Data = (deliveries.Select(d => _mapper.Map<GetDeliveryDto>(d))).ToList();
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<Delivery>> GetDeliveryById(int id)
+        public async Task<ServiceResponse<GetDeliveryDto>> GetDeliveryById(int id)
         {
-            ServiceResponse<Delivery> serviceResponse = new ServiceResponse<Delivery>();
-            serviceResponse.Data = deliveries.FirstOrDefault(d => d.Id == id);
+            ServiceResponse<GetDeliveryDto> serviceResponse = new ServiceResponse<GetDeliveryDto>();
+            serviceResponse.Data = _mapper.Map<GetDeliveryDto>(deliveries.FirstOrDefault(d => d.Id == id));
             return serviceResponse;
         }
     }

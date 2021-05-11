@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using AutoMapper;
 
 namespace DeliverySystem
 {
@@ -23,6 +24,7 @@ namespace DeliverySystem
 
             services.AddControllers();
             services.AddScoped<IDeliveryService, DeliveryService>();
+            services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DeliverySystem", Version = "v1" });

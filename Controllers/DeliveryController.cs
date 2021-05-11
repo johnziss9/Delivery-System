@@ -1,6 +1,5 @@
-using System.Linq;
 using System.Threading.Tasks;
-using DeliverySystem.Models;
+using DeliverySystem.Dtos.Delivery;
 using DeliverySystem.Services.DeliveryService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +17,7 @@ namespace DeliverySystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddDelivery(Delivery delivery)
+        public async Task<IActionResult> AddDelivery(AddDeliveryDto delivery)
         {
             return Ok(await _deliveryService.AddDelivery(delivery));
         }
