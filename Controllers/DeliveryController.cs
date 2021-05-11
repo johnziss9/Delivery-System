@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DeliverySystem.Dtos.Delivery;
 using DeliverySystem.Models;
@@ -15,6 +16,17 @@ namespace DeliverySystem.Controllers
         public DeliveryController(IDeliveryService deliveryService)
         {
             _deliveryService = deliveryService;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            ServiceResponse<List<GetDeliveryDto>> response = await _deliveryService.DeleteDelivery(id);
+
+            if (response.Data == null)
+                return NotFound(response);
+
+            return Ok(response);
         }
 
         [HttpPut]

@@ -23,6 +23,26 @@ namespace DeliverySystem.Services.DeliveryService
             _mapper = mapper;
         }
 
+        public async Task<ServiceResponse<List<GetDeliveryDto>>> DeleteDelivery(int id)
+        {
+            ServiceResponse<List<GetDeliveryDto>> serviceResponse = new ServiceResponse<List<GetDeliveryDto>>();
+
+            try
+            {
+                Delivery delivery = deliveries.First(d => d.Id == id);
+                deliveries.Remove(delivery);
+
+                serviceResponse.Data = (deliveries.Select(d => _mapper.Map<GetDeliveryDto>(d))).ToList();
+            }
+            catch(Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponse<GetDeliveryDto>> UpdateDelivery(UpdateDeliveryDto updatedDelivery)
         {
             ServiceResponse<GetDeliveryDto> serviceResponse = new ServiceResponse<GetDeliveryDto>();
