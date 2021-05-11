@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DeliverySystem.Models;
 
 namespace DeliverySystem.Services.DeliveryService
@@ -12,18 +13,18 @@ namespace DeliverySystem.Services.DeliveryService
             new Delivery { Id = 1, State = "Expired" }
         };
 
-        public List<Delivery> AddDelivery(Delivery delivery)
+        public async Task<List<Delivery>> AddDelivery(Delivery delivery)
         {
             deliveries.Add(delivery);
             return deliveries;
         }
 
-        public List<Delivery> GetAllDeliveries()
+        public async Task<List<Delivery>> GetAllDeliveries()
         {
             return deliveries;
         }
 
-        public Delivery GetDeliveryById(int id)
+        public async Task<Delivery> GetDeliveryById(int id)
         {
             return deliveries.FirstOrDefault(d => d.Id == id);
         }

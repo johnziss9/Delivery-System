@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using DeliverySystem.Models;
 using DeliverySystem.Services.DeliveryService;
 using Microsoft.AspNetCore.Mvc;
@@ -17,21 +18,21 @@ namespace DeliverySystem.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddDelivery(Delivery delivery)
+        public async Task<IActionResult> AddDelivery(Delivery delivery)
         {
-            return Ok(_deliveryService.AddDelivery(delivery));
+            return Ok(await _deliveryService.AddDelivery(delivery));
         }
 
         [HttpGet("GetAll")]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(_deliveryService.GetAllDeliveries());
+            return Ok(await _deliveryService.GetAllDeliveries());
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetSingle(int id)
+        public async Task<IActionResult> GetSingle(int id)
         {
-            return Ok(_deliveryService.GetDeliveryById(id));
+            return Ok(await _deliveryService.GetDeliveryById(id));
         }
     }
 }
