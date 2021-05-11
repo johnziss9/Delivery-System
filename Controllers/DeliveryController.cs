@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using System.Linq;
 using DeliverySystem.Models;
+using DeliverySystem.Services.DeliveryService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeliverySystem.Controllers
@@ -9,29 +9,29 @@ namespace DeliverySystem.Controllers
     [Route("[controller]")]
     public class DeliveryController : Controller
     {
-        private static List<Delivery> deliveries = new List<Delivery>
+        private readonly IDeliveryService _deliveryService;
+
+        public DeliveryController(IDeliveryService deliveryService)
         {
-            new Delivery(),
-            new Delivery { Id = 1, State = "Expired" }
-        };
+            _deliveryService = deliveryService;
+        }
 
         [HttpPost]
         public IActionResult AddDelivery(Delivery delivery)
         {
-            deliveries.Add(delivery);
-            return Ok(deliveries);
+            return Ok(_deliveryService.AddDelivery(delivery));
         }
 
         [HttpGet("GetAll")]
         public IActionResult Get()
         {
-            return Ok(deliveries);
+            return Ok(_deliveryService.GetAllDeliveries());
         }
 
         [HttpGet("{id}")]
         public IActionResult GetSingle(int id)
         {
-            return Ok(deliveries.FirstOrDefault(c => c.Id == id));
+            return Ok(_deliveryService.GetDeliveryById(id));
         }
     }
 }
