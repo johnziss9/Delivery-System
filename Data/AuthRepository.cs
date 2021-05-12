@@ -21,6 +21,11 @@ namespace DeliverySystem.Data
 
         public async Task<ServiceResponse<int>> Register(User user, string password)
         {
+            CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
@@ -32,6 +37,15 @@ namespace DeliverySystem.Data
         public Task<bool> UserExist(string username)
         {
             throw new System.NotImplementedException();
+        }
+
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
         }
     }
 }
