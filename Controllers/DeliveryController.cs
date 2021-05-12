@@ -9,7 +9,7 @@ namespace DeliverySystem.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DeliveryController : Controller
+    public class DeliveryController : ControllerBase
     {
         private readonly IDeliveryService _deliveryService;
 

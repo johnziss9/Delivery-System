@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using DeliverySystem.Data;
+using DeliverySystem.Services.AuthService;
 
 namespace DeliverySystem
 {
@@ -26,6 +27,7 @@ namespace DeliverySystem
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
             services.AddScoped<IDeliveryService, DeliveryService>();
+            services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen(c =>
             {
