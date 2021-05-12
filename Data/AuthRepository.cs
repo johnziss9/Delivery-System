@@ -24,7 +24,7 @@ namespace DeliverySystem.Data
         {
             ServiceResponse<int> response = new ServiceResponse<int>();
 
-            if (await UserExist(user.Username))
+            if (await UserExists(user.Username))
             {
                 response.Success = false;
                 response.Message = "User already exists";
@@ -42,9 +42,11 @@ namespace DeliverySystem.Data
 
 
             response.Data = user.Id;
+
+            return response;
         }
 
-        public async Task<bool> UserExist(string username)
+        public async Task<bool> UserExists(string username)
         {
             if (await _context.Users.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
                 return true;
