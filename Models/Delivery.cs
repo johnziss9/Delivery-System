@@ -7,5 +7,6 @@ namespace DeliverySystem.Models
         public AccessWindow AccessWindow { get; set; }
         public Recipient Recipient { get; set; }
         public Order Order { get; set; }
+        public User User { get; set; }
     }
 }
