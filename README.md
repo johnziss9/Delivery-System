@@ -45,7 +45,8 @@ The application will consist of a Web API that will be used by both partners and
 
 ## Current Issues
 1) When retreiving deliveries from the database, the nested classes come up as null. I suspect this has soemthing to do with the Dtos and how they are set up. I can only see the full json like the example above when I am adding a delivery.
-2) Docker error. The application runs correctly initially but when trying to make a HTTP call, I get a database error. This only happens in the container. When the project runs locally using dotnet run, there are no errors.
+2) When the delivery is outside the access window, it doesn't update automatically. It is only checking when trying to update the delivery state manually.
+3) Docker error. The application runs correctly initially but when trying to make a HTTP call, I get a database error. This only happens in the container. When the project runs locally using dotnet run, there are no errors.
 
 ## Additional Functionality (Bonus)
 * Data Storage (SQLite)

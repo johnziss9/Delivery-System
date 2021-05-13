@@ -45,18 +45,83 @@ namespace DeliverySystem.Services.DeliveryService
 
         public async Task<ServiceResponse<GetDeliveryDto>> UpdateDelivery(UpdateDeliveryDto updatedDelivery)
         {
+            var currentTime = DateTime.Now;
+
             ServiceResponse<GetDeliveryDto> serviceResponse = new ServiceResponse<GetDeliveryDto>();
 
             try
             {
                 Delivery delivery = await _context.Deliveries.FirstOrDefaultAsync(d => d.Id == updatedDelivery.Id);
-                delivery.State = updatedDelivery.State;
-                // Did not include the rest of the properties as the state will be the only thing that will need be updated.
 
-                _context.Deliveries.Update(delivery);
-                await _context.SaveChangesAsync();
-
-                serviceResponse.Data = _mapper.Map<GetDeliveryDto>(delivery);
+                switch(updatedDelivery.State.ToLower())
+                {
+                    case "created": 
+                        serviceResponse.Success = false;
+                        serviceResponse.Message = "Cannot change state to created";
+                        break;
+                    case "approved":
+                        if (delivery.State.ToLower() == "created")
+                        {
+                            delivery.State = updatedDelivery.State;
+                            _context.Deliveries.Update(delivery);
+                            await _context.SaveChangesAsync();
+                            serviceResponse.Data = _mapper.Map<GetDeliveryDto>(delivery);
+                        }
+                        else
+                        {
+                            serviceResponse.Success = false;
+                            serviceResponse.Message = $"Cannot change state to prroved from current {delivery.State} value";
+                        }
+                        break;
+                    case "completed":
+                        if ((delivery.State.ToLower() == "created" || delivery.State.ToLower() == "approved") && 
+                        (currentTime >= delivery.AccessWindow.StartTime && currentTime <= delivery.AccessWindow.EndTime))
+                        {
+                            delivery.State = updatedDelivery.State;
+                            _context.Deliveries.Update(delivery);
+                            await _context.SaveChangesAsync();
+                            serviceResponse.Data = _mapper.Map<GetDeliveryDto>(delivery);
+                        }
+                        else
+                        {
+                            serviceResponse.Success = false;
+                            serviceResponse.Message = $"Cannot change state to prroved from current {delivery.State} value";
+                        }
+                        break;
+                    case "cancelled":
+                        if (delivery.State.ToLower() == "created" || delivery.State.ToLower() == "approved")
+                        {
+                            delivery.State = updatedDelivery.State;
+                            _context.Deliveries.Update(delivery);
+                            await _context.SaveChangesAsync();
+                            serviceResponse.Data = _mapper.Map<GetDeliveryDto>(delivery);
+                        }
+                        else
+                        {
+                            serviceResponse.Success = false;
+                            serviceResponse.Message = $"Cannot change state to prroved from current {delivery.State} value";
+                        }
+                        break;
+                    case "expired":
+                        if ((delivery.State.ToLower() == "created" || delivery.State.ToLower() == "approved") && 
+                        currentTime > delivery.AccessWindow.EndTime)
+                        {
+                            delivery.State = updatedDelivery.State;
+                            _context.Deliveries.Update(delivery);
+                            await _context.SaveChangesAsync();
+                            serviceResponse.Data = _mapper.Map<GetDeliveryDto>(delivery);
+                        }
+                        else
+                        {
+                            serviceResponse.Success = false;
+                            serviceResponse.Message = $"Cannot change state to prroved from current {delivery.State} value";
+                        }
+                        break;
+                    default:
+                        serviceResponse.Success = false;
+                        serviceResponse.Message = $"Cannot change state to incorrect value";
+                        break;                  
+                }
             }
             catch (Exception ex)
             {

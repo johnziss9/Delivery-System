@@ -36,7 +36,9 @@ namespace DeliverySystem.Controllers
         {
             ServiceResponse<GetDeliveryDto> response = await _deliveryService.UpdateDelivery(updatedDelivery);
 
-            if (response.Data == null)
+            if (response.Message.Contains("Cannot change state"))
+                return BadRequest(response);
+            else if (response.Data == null)
                 return NotFound(response);
             
             return Ok(response);
