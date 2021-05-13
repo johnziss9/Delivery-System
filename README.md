@@ -57,7 +57,7 @@ The application will consist of a Web API that will be used by both partners and
 ## Running the project
 As mentioned above there are currently two ways to run the project:
 
-### Using Docker
+### Using Docker (Currently not working)
 
 To use this option follow these steps:
 1) Make sure Docker is installed locally
