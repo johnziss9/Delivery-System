@@ -1,18 +1,26 @@
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using AutoMapper.Configuration;
 using DeliverySystem.Models;
 using DeliverySystem.Services.AuthService;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DeliverySystem.Data
 {
     public class AuthRepository : IAuthRepository
     {
         private readonly DataContext _context;
+        private readonly IConfiguration _configuration;
 
-        public AuthRepository(DataContext context)
+        public AuthRepository(DataContext context, IConfiguration configuration)
         {
+            _configuration = configuration;
             _context = context;
-
         }
 
         public async Task<ServiceResponse<string>> Login(string username, string password)
@@ -32,7 +40,7 @@ namespace DeliverySystem.Data
                 response.Message = "Wrong password";
             }
             else
-                response.Data = user.Id.ToString();
+                response.Data = CreateToken(user);
 
             return response;
         }
@@ -45,7 +53,7 @@ namespace DeliverySystem.Data
             {
                 response.Success = false;
                 response.Message = "User already exists";
-                
+
                 return response;
             }
 
@@ -66,7 +74,7 @@ namespace DeliverySystem.Data
         {
             if (await _context.Users.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
                 return true;
-            
+
             return false;
         }
 
@@ -93,6 +101,31 @@ namespace DeliverySystem.Data
 
                 return true;
             }
+        }
+
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username)
+            };
+
+            SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+
+            SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = creds
+            };
+
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
         }
     }
 }

@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 using DeliverySystem.Dtos.Delivery;
 using DeliverySystem.Models;
 using DeliverySystem.Services.DeliveryService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeliverySystem.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class DeliveryController : ControllerBase
